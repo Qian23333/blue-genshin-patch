@@ -18,6 +18,7 @@ static BASE: OnceLock<usize> = OnceLock::new();
 
 fn on_attach() {
     // SAFETY: fuck off
+    thread::sleep(Duration::from_secs(3));
     unsafe {
         let _ = Console::FreeConsole();
         let _ = Console::AllocConsole();
