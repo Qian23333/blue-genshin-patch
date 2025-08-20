@@ -20,7 +20,22 @@ const INJECT_DLL: &str = "yuzuha.dll";
 
 fn main() -> ExitCode {
     let current_dir = std::env::current_dir().unwrap();
-    let dll_path = current_dir.join(INJECT_DLL);
+
+    // 1. 获取上级目录
+    let parent_dir = match current_dir.parent() {
+        Some(p) => p,
+        None => {
+            eprintln!("错误: 无法获取上级目录。");
+            let _ = std::io::stdin().read_line(&mut String::new());
+            return ExitCode::FAILURE;
+        }
+    };
+
+    // 2. 构建 DLL 的搜索路径 (../yuzuha/)
+    let dll_search_dir = parent_dir.join("yuzuha");
+
+    // 3. 定义 DLL 的完整路径
+    let dll_path = dll_search_dir.join(INJECT_DLL);
     if !dll_path.is_file() {
         eprintln!("{INJECT_DLL} not found");
         let _ = std::io::stdin().read_line(&mut String::new());
