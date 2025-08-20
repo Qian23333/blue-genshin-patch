@@ -15,7 +15,7 @@ use windows::Win32::System::Threading::{
 };
 use windows::core::{PCSTR, s};
 
-const EXECUTABLES: &[&str] = &["ZenlessZoneZero.exe", "ZenlessZoneZeroBeta.exe"];
+const EXECUTABLES: &[&str] = &["AzurPromilia.exe"];
 const INJECT_DLL: &str = "yuzuha.dll";
 
 fn main() -> ExitCode {
@@ -49,10 +49,14 @@ fn main() -> ExitCode {
             let mut proc_info = PROCESS_INFORMATION::default();
             let startup_info = STARTUPINFOA::default();
 
+            // 在启动参数中加入 -start=azurpromilia_launcher
+            let cmd_line = format!("{} -start=azurpromilia_launcher", exe_name.to_str().unwrap());
+            let cmd_cstring = CString::new(cmd_line).unwrap();
+
             unsafe {
                 CreateProcessA(
                     PCSTR(exe_name.as_bytes_with_nul().as_ptr()),
-                    None,
+                    Some(windows::core::PSTR(cmd_cstring.as_bytes_with_nul().as_ptr() as _)),
                     None,
                     None,
                     false,

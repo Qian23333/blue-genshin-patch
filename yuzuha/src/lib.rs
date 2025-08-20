@@ -9,9 +9,6 @@ use windows::{
     core::s,
 };
 
-mod censorship_patch;
-mod crypto;
-mod hoyopass;
 mod interceptor;
 mod network;
 mod util;
@@ -26,10 +23,7 @@ fn on_attach() {
         let _ = Console::AllocConsole();
     }
 
-    println!("yuzuha-patch (2.2.4 BETA) is initializing");
-    println!(
-        "to work with orphie-zs: https://git.xeondev.com/orphie-zs/orphie-zs/"
-    );
+    println!("yuzuha-patch (For Blue Genshin) is initializing");
 
     let base = loop {
         unsafe {
@@ -47,10 +41,6 @@ fn on_attach() {
     let mut interceptor = Interceptor::new(base);
 
     network::hook_make_initial_url(&mut interceptor);
-    network::hook_web_request_create(&mut interceptor);
-    crypto::patch_encryption(&mut interceptor);
-    hoyopass::disable_hoyopass(&mut interceptor);
-    censorship_patch::init(&mut interceptor);
 
     std::thread::sleep(Duration::from_secs(u64::MAX));
 }
