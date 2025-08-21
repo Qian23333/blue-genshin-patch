@@ -24,6 +24,22 @@ pub fn read_csharp_string(ptr: *const u8) -> String {
     }
 }
 
+#[inline]
+pub fn read_qurl_string(ptr: *const u8) -> String {
+    if !ptr.is_null() {
+        unsafe {
+            let str_slice = std::slice::from_raw_parts(
+                ptr.byte_offset(0x18).cast::<u16>(),
+                *ptr.byte_offset(0x4).cast::<u32>() as usize,
+            );
+            String::from_utf16_lossy(str_slice)
+        }
+    }
+    else {
+        String::new()
+    }
+}
+
 pub fn disable_memory_protection() {
     unsafe {
         let ntdll = GetModuleHandleA(s!("ntdll.dll")).unwrap();
